@@ -11,7 +11,8 @@ public abstract class TareaEnTexto {
 	 * 4. Las descripciones tienen que estar contenidas dentro de "<>" para poder tomarse como tal
 	 * 5. Para las horas utilizar formato hs, es decir si tu tarea lleva 30m seria 0.5hs
 	 * 6. Solo las tareas hijas finales deben llevar horas
-	 * Estas reglas pueden ir mutando dependiendo el codigo, favor de cambiarlas si se toco algo que modifique el comportamiento del mismo*/
+	 * Estas reglas pueden ir mutando dependiendo el codigo, favor de cambiarlas si se toco algo que modifique el comportamiento del mismo
+	 comentario de prueba Nacho*/
 	
 	public static final String TAREA_EN_TEXTO = "DB\r\n" + 
 			"	.Crear tabla MAT_GAMER.																									0.5hs\r\n" + 
