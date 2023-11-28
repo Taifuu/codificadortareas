@@ -121,6 +121,9 @@ public abstract class CodificacionEstimacion {
 	public static float transformarTextoAhoras(String nombreTarea) {
 		nombreTarea = nombreTarea.trim();
 		int lastIndexEspacioLargo = nombreTarea.lastIndexOf("	");
+		if(lastIndexEspacioLargo == -1 ) {
+			lastIndexEspacioLargo = nombreTarea.lastIndexOf(" ");
+		}
 		int lastIndexHs = nombreTarea.lastIndexOf("hs");
 		String horasSueltas = nombreTarea.substring(lastIndexEspacioLargo+1, lastIndexHs);
 		return Float.parseFloat(horasSueltas);
