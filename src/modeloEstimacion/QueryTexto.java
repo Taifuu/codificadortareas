@@ -14,8 +14,8 @@ public abstract class QueryTexto {
 	/*Este es el nombre de la interface*/
 	public static final String NOMBRE_QUERY = "";
 	
-	/*Acï¿½ se pone la query que queres transformar en una interface*/
-	public static final String QUERY = "asdfasd";
+	/*Acá se pone la query que queres transformar en una interface*/
+	public static final String QUERY = "";
 	
 	public static final String TEMPLATE_INTERFACE = "interface "+ NOMBRE_QUERY +" {\n" + 
 			"\tString QUERY = "+ QUERY_COMPLETA +";\n" + 
