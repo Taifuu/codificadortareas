@@ -17,6 +17,7 @@ public class CodificacionQueries {
 	public static final String PIPE_PARENTESIS_DERECHO = ")";
 	public static final String PATRON_PARAMETRO_IN = "(\\S+)";
 	public static final String PIPE_BARRA_N = "\n";
+	public static final String PIPE_ESPACIO  = " ";
 	
 	public static String getParametrosSalida(String query) {
 		StringBuilder template = new StringBuilder();
@@ -29,23 +30,21 @@ public class CodificacionQueries {
 		String[] parametrosSpliteados = parametrosSalidaString.split(PIPE_COMA);
 		int limite = parametrosSpliteados.length;
 		for (int i = 0; i < limite; i++) {
-			String par = parametrosSpliteados[i].trim();
-			if(par.contains(PIPE_PUNTO)) {
-				String parcial = QueryTexto.TEMPLATE_PARAMETRO_DE_SALIDA.replace(QueryTexto.NOMBRE_PARAMETRO_SALIDA, par.substring(par.indexOf(PIPE_PUNTO)+1));
-				parcial = parcial.replace(QueryTexto.POSICION_PARAMETRO_SALIDA, ((i+1)+""));
-				if(i+1 < limite) {
-					template.append(parcial+"\n");
-				} else {
-					template.append(parcial);
-				}
+			String unParametro = parametrosSpliteados[i].trim();
+			String temp = unParametro;
+			if(temp.contains(PIPE_PUNTO)) {
+				temp = temp.substring(temp.indexOf(PIPE_PUNTO)+1);
+			}
+			if(temp.contains(PIPE_ESPACIO)) {
+				String[] parSplit = temp.split(PIPE_ESPACIO);
+				temp = parSplit[parSplit.length-1];
+			}
+			temp = QueryTexto.TEMPLATE_PARAMETRO_DE_SALIDA.replace(QueryTexto.NOMBRE_PARAMETRO_SALIDA, temp);
+			temp = temp.replace(QueryTexto.POSICION_PARAMETRO_SALIDA, ((i+1)+""));
+			if(i+1 < limite) {
+				template.append(temp+"\n");
 			} else {
-				String parcial = QueryTexto.TEMPLATE_PARAMETRO_DE_SALIDA.replace(QueryTexto.NOMBRE_PARAMETRO_SALIDA, par);
-				parcial = parcial.replace(QueryTexto.POSICION_PARAMETRO_SALIDA, ((i+1)+""));
-				if(i+1 < limite) {
-					template.append(parcial+"\n");
-				} else {
-					template.append(parcial);
-				}
+				template.append(temp);
 			}
 		}
 		
