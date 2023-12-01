@@ -95,7 +95,7 @@ public class CodificacionQueries {
 			}
 			queryCompleta.append("\"").append(unaLinea);
 			if(i+1 < querySpliteada.length) {
-				queryCompleta.append("\" +\n");
+				queryCompleta.append(" \\n\" +\n");
 			} else {
 				queryCompleta.append("\"");
 			}
