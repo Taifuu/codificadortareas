@@ -15,6 +15,7 @@ public class CodificacionQueries {
 	public static final String PIPE_COMA = ",";
 	public static final String PIPE_DOBLE_PUNTO = ":";
 	public static final String PIPE_PARENTESIS_DERECHO = ")";
+	public static final String PIPE_PUNTO_COMA = ";";
 	public static final String PATRON_PARAMETRO_IN = "(\\S+)";
 	public static final String PIPE_BARRA_N = "\n";
 	public static final String PIPE_ESPACIO  = " ";
@@ -65,7 +66,14 @@ public class CodificacionQueries {
 				if(palabra.contains(PIPE_PARENTESIS_DERECHO)) {
 					palabra = palabra.replace(PIPE_PARENTESIS_DERECHO, "");
 				}
-				template.append(QueryTexto.TEMPLATE_PARAMETRO_DE_ENTRADA.replace(QueryTexto.NOMBRE_PARAMETRO_ENTRADA, palabra));
+				if(palabra.contains(PIPE_PUNTO_COMA)) {
+					palabra = palabra.replace(PIPE_PUNTO_COMA, "");
+				}
+				if(template.indexOf(palabra) < 0) {
+					template.append(QueryTexto.TEMPLATE_PARAMETRO_DE_ENTRADA.replace(QueryTexto.NOMBRE_PARAMETRO_ENTRADA, palabra));
+				} else {
+					continue;
+				}
 			}
 			if(i+1 < parametrosSpliteados.length) {
 				template.append("\n");
