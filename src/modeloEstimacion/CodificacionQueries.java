@@ -153,47 +153,6 @@ public class CodificacionQueries {
 				//Reviso si hay más partes innecesarias para cortar
 				parentesis = output.toString().contains(PIPE_PARENTESIS_IZQUIERDO_STRING);
 			}
-			/*if(parentesis) {
-				for (int i = 0; i < parametrosSalidaString.length(); i++) {
-					char c = parametrosSalidaString.charAt(i);
-					//Reviso cuantos tengo y los cuento
-					if(PIPE_PARENTESIS_IZQUIERDO == c) {
-						contParIzq += 1;
-					}
-					//Cuando encuentro el primer parentesis derecho
-					if(PIPE_PARENTESIS_DERECHO == c) {
-						for (int j = 0; j < parametrosSalidaString.length(); j++) {
-							char z = parametrosSalidaString.charAt(j);
-							//Reviso cuantos hay y los cuento
-							if(PIPE_PARENTESIS_DERECHO == z) {
-								contParDer += 1;
-							}
-							//Cuando la cantidad sea la misma
-							if(contParIzq <= contParDer) {
-								//Recorto el string para eliminar toda esa parte que no sirve
-								parametrosSalidaString = parametrosSalidaString.substring(j+2);
-								//Y reviso si hay más parametros de salida
-								if(parametrosSalidaString.contains(PIPE_COMA)) {
-									//Si los hay, los guardo en una variable temporal
-									String par = parametrosSalidaString.substring(0, parametrosSalidaString.indexOf(PIPE_COMA)+1);
-									if(par.contains(PIPE_PARENTESIS_IZQUIERDO_STRING)) {
-										par = recortarPalabrasEntreParentesis(par);
-									}
-									output.append(par);
-									parametrosSalidaString = parametrosSalidaString.substring(parametrosSalidaString.indexOf(PIPE_COMA)+1);
-									break;
-								} else {
-									//Si es el último o no hay más, también los guardo en la variable
-									output.append(parametrosSalidaString);
-									break;
-								}
-							}
-						}
-					}
-				}
-				//Reviso si hay más partes innecesarias para cortar
-				parentesis = parametrosSalidaString.contains(PIPE_PARENTESIS_IZQUIERDO_STRING);
-			}*/
 		} while (parentesis);
 		//Si en principio no había parentesis entonces devuelvo lo que entro, sino devuelvo lo que tengo en output
 		if(output.length() > 0) {
@@ -204,11 +163,6 @@ public class CodificacionQueries {
 	}
 	
 	public static void main(String[] args) {
-		/*List<String> o = getParametrosSalida(QueryTexto.QUERY);
-		for (String string : o) {
-			System.out.println(string);
-		}*/
-		//System.out.println(getParametrosSalida(QueryTexto.QUERY));
-		System.out.println(decodeQuery(QueryTexto.QUERY));
+		System.out.println(decodeQuery(QueryTexto.QUERY.toUpperCase()));
 	}
 }
