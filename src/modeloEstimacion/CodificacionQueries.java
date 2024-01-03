@@ -1,5 +1,7 @@
 package modeloEstimacion;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,7 @@ public class CodificacionQueries {
 		StringBuilder template = new StringBuilder();
 		String[] parametrosSpliteados = query.split(PIPE_DOBLE_PUNTO);
 		Pattern pattern = Pattern.compile(PATRON_PARAMETRO_IN);
+		List<String> palabras = new ArrayList<>();
 		for (int i = 1; i < parametrosSpliteados.length; i++) {
 			Matcher matcher = pattern.matcher(parametrosSpliteados[i]);
 			if(matcher.find()) {
@@ -70,7 +73,8 @@ public class CodificacionQueries {
 				if(palabra.contains(PIPE_PUNTO_COMA)) {
 					palabra = palabra.replace(PIPE_PUNTO_COMA, "");
 				}
-				if(template.indexOf(palabra) < 0) {
+				if(!palabras.contains(palabra)) {
+					palabras.add(palabra);
 					template.append(QueryTexto.TEMPLATE_PARAMETRO_DE_ENTRADA.replace(QueryTexto.NOMBRE_PARAMETRO_ENTRADA, palabra.toUpperCase()));
 				} else {
 					continue;
