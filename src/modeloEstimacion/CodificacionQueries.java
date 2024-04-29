@@ -92,12 +92,12 @@ public class CodificacionQueries {
 		if(query.startsWith(CLAVE_SELECT)) {
 			output = output.replace(QueryTexto.OUT_PARAMS, getParametrosSalida(query));
 		} else {
-			output = output.replace(QueryTexto.OUT_PARAMS, "");
+			output = output.replace(QueryTexto.OUT_PARAMS + "\n", "");
 		}
 		if(query.contains(PIPE_DOBLE_PUNTO)) {
 			output = output.replace(QueryTexto.IN_PARAMS, getParametrosEntrada(query));
 		} else {
-			output = output.replace(QueryTexto.IN_PARAMS, "");
+			output = output.replace(QueryTexto.IN_PARAMS + "\n", "");
 		}
 		String[] querySpliteada = query.split(PIPE_BARRA_N);
 		StringBuilder queryCompleta = new StringBuilder();
