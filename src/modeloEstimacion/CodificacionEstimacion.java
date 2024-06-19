@@ -157,6 +157,10 @@ public abstract class CodificacionEstimacion {
 			padreSupremo.hijos = getHijos(lista, 0);
 		}
 		float contadorHoras = getTareasString(padreSupremo, "", false, 0);
-		System.out.println("El total de horas son: " + contadorHoras + "hs");
+		String contHoras = Float.toString(contadorHoras);
+		if(contHoras.substring(contHoras.indexOf('.')).length() > 1) {
+			contHoras = Float.toString(Math.round(contadorHoras));
+		}
+		System.out.println("El total de horas son: " + contHoras + "hs");
 	}
 }

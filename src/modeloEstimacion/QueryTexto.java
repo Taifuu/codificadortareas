@@ -17,9 +17,9 @@ public abstract class QueryTexto {
 	public static final String TEMPLATE_INTERFACE = "interface "+ NOMBRE_QUERY +" {\n" + 
 			"\tString QUERY = "+ QUERY_COMPLETA +";\n" + 
 			"\n" + 
-			IN_PARAMS +"\n" + 
-			OUT_PARAMS +"\n" + 
-			"}";
+			IN_PARAMS + "\n" + 
+			OUT_PARAMS + 
+			"\n}";
 	
 	public static final String TEMPLATE_PARAMETRO_DE_ENTRADA = "\tString IN_"+ NOMBRE_PARAMETRO_ENTRADA +" = \""+ NOMBRE_PARAMETRO_ENTRADA +"\";";
 	
