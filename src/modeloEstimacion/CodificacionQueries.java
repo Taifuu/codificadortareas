@@ -22,44 +22,12 @@ public class CodificacionQueries {
 	public static final String PIPE_BARRA_N = "\n";
 	public static final String PIPE_ESPACIO  = " ";
 	
-	public static String getParametrosSalida(String query) {
-		StringBuilder template = new StringBuilder();
-		int posSelect = query.indexOf(CLAVE_SELECT);
-		if(posSelect != -1) {
-			posSelect += CLAVE_SELECT.length();
-		}
-		int posFrom = query.indexOf(CLAVE_FROM);
-		String parametrosSalidaString = query.substring(posSelect, posFrom);
-		parametrosSalidaString = recortarPalabrasEntreParentesis(parametrosSalidaString);
-		String[] parametrosSpliteados = parametrosSalidaString.split(PIPE_COMA);
-		int limite = parametrosSpliteados.length;
-		for (int i = 0; i < limite; i++) {
-			String unParametro = parametrosSpliteados[i].trim();
-			String temp = unParametro;
-			
-			if(temp.contains(PIPE_PUNTO)) {
-				temp = temp.substring(temp.indexOf(PIPE_PUNTO)+1);
-			}
-			if(temp.contains(PIPE_ESPACIO)) {
-				String[] parSplit = temp.split(PIPE_ESPACIO);
-				temp = parSplit[parSplit.length-1];
-			}
-			temp = QueryTexto.TEMPLATE_PARAMETRO_DE_SALIDA.replace(QueryTexto.NOMBRE_PARAMETRO_SALIDA, temp.toUpperCase());
-			if(i+1 < limite) {
-				template.append(temp+"\n");
-			} else {
-				template.append(temp);
-			}
-		}
-		
-		return template.toString();
-	}
-	
 	public static String getParametrosEntrada(String query) {
 		StringBuilder template = new StringBuilder();
 		String[] parametrosSpliteados = query.split(PIPE_DOBLE_PUNTO);
 		Pattern pattern = Pattern.compile(PATRON_PARAMETRO_IN);
 		List<String> palabras = new ArrayList<>();
+		StringBuilder inParamsAnt = new StringBuilder();
 		for (int i = 1; i < parametrosSpliteados.length; i++) {
 			Matcher matcher = pattern.matcher(parametrosSpliteados[i]);
 			if(matcher.find()) {
@@ -75,95 +43,41 @@ public class CodificacionQueries {
 				}
 				if(!palabras.contains(palabra)) {
 					palabras.add(palabra);
-					template.append(QueryTexto.TEMPLATE_PARAMETRO_DE_ENTRADA.replace(QueryTexto.NOMBRE_PARAMETRO_ENTRADA, palabra.toUpperCase()));
+					inParamsAnt.append(QueryTexto.COMA_ESPACIO).append(palabra.toUpperCase()).append(QueryTexto.COMILLAS);
 				} else {
 					continue;
 				}
 			}
-			if(i+1 < parametrosSpliteados.length) {
-				template.append("\n");
-			}
 		}
+		template.append(QueryTexto.TEMPLATE_PARAMETRO_DE_ENTRADA.replace(QueryTexto.NOMBRE_PARAMETRO_ENTRADA, inParamsAnt.toString().replaceFirst(QueryTexto.COMA_ESPACIO, "")));
+		template.append("\n");
 		return template.toString();
 	}
 	
 	public static String decodeQuery(String query) {
 		String output = QueryTexto.TEMPLATE_INTERFACE;
-		if(query.startsWith(CLAVE_SELECT)) {
-			output = output.replace(QueryTexto.OUT_PARAMS, getParametrosSalida(query));
-		} else {
-			output = output.replace(QueryTexto.OUT_PARAMS + "\n", "");
-		}
 		if(query.contains(PIPE_DOBLE_PUNTO)) {
 			output = output.replace(QueryTexto.IN_PARAMS, getParametrosEntrada(query));
 		} else {
 			output = output.replace(QueryTexto.IN_PARAMS + "\n", "");
 		}
 		String[] querySpliteada = query.split(PIPE_BARRA_N);
-		StringBuilder queryCompleta = new StringBuilder();
+		StringBuilder queryCompleta = new StringBuilder("\"\"\"\n");
 		for (int i = 0; i < querySpliteada.length; i++) {
 			String unaLinea = querySpliteada[i];
 			if(unaLinea.contains("\r")) {
 				unaLinea = unaLinea.replace("\r", "");
 			}
-			queryCompleta.append("\"").append(unaLinea);
-			if(i+1 < querySpliteada.length) {
-				queryCompleta.append(" \\n\" +\n");
-			} else {
-				queryCompleta.append("\"");
+			if(unaLinea.contains("\n")) {
+				unaLinea = unaLinea.replace("\n", "");
 			}
+			queryCompleta.append("\t\t\t\t\t\t").append(unaLinea).append("\n");
 		}
+		queryCompleta.append("\t\t\t\t\t\t").append("\"\"\"");
 		
 		output = output.replace(QueryTexto.QUERY_COMPLETA, queryCompleta.toString());
 		
 		return output;
-	}
-	
-	private static String recortarPalabrasEntreParentesis(String parametrosSalidaString) {
-		StringBuilder output = new StringBuilder(parametrosSalidaString);
-		boolean parentesis = parametrosSalidaString.contains(PIPE_PARENTESIS_IZQUIERDO_STRING);
-		do {
-			int contParIzq = 0;
-			int posPrimerParIzq = 0;
-			int contParDer = 0;
-			//Si tengo parentesis izquierdo
-			if(parentesis) {
-				for (int i = 0; i < output.length(); i++) {
-					char c = output.charAt(i);
-					//Reviso cuantos tengo y los cuento
-					if(PIPE_PARENTESIS_IZQUIERDO == c) {
-						if(contParIzq == 0) {
-							posPrimerParIzq = i;
-						}
-						contParIzq += 1;
-					}
-					//Cuando encuentro el primer parentesis derecho
-					if(PIPE_PARENTESIS_DERECHO == c) {
-						for (int j = 0; j < output.length(); j++) {
-							char z = output.charAt(j);
-							//Reviso cuantos hay y los cuento
-							if(PIPE_PARENTESIS_DERECHO == z) {
-								contParDer += 1;
-							}
-							//Cuando la cantidad sea la misma
-							if(contParIzq <= contParDer) {
-								//Recorto el string para eliminar toda esa parte que no sirve
-								output.delete(posPrimerParIzq, j+2);
-								break;
-							}
-						}
-					}
-				}
-				//Reviso si hay más partes innecesarias para cortar
-				parentesis = output.toString().contains(PIPE_PARENTESIS_IZQUIERDO_STRING);
-			}
-		} while (parentesis);
-		//Si en principio no había parentesis entonces devuelvo lo que entro, sino devuelvo lo que tengo en output
-		if(output.length() > 0) {
-			return output.toString();
-		} else {
-			return parametrosSalidaString;
-		}
 	}
 	
 	public static void main(String[] args) {
